@@ -1,4 +1,7 @@
 # Scroll Depth
+
+A highly-modified version of jquery.scrolldepth for use in [SCPR/SCPRv4](https://github.com/scpr/scprv4). 
+
 Scroll Depth is a Google Analytics plugin that tracks how far users are scrolling. The plugin provides native support for Universal Analytics, Classic Google Analytics, and Google Tag Manager. It can also be used with any analytics service that supports events.
 
 **[All information is available on the Project Page](http://projects.parsnip.io/scroll-depth/)**
@@ -13,6 +16,8 @@ There's a test HTML file that mocks the Google Analytics functions and writes th
 If you have any questions you can find me on Twitter at [@robflaherty](https://twitter.com/robflaherty). If you need help fixing something, **please provide a URL**.
 
 ## Changelog
+
+0.9.1 (04/06/16): Added changes specific to SCPR repo.  This includes adding a custom 'container'.
 
 0.9 (11/19/15): Removed Baseline event. Added methods to add elements, remove elements, and reset the current scroll tracking state.
 

@@ -1,10 +1,19 @@
+/* NOTE: This has been highly modified to suit our own needs.
+ * This was done to expose the current scroll percentage
+ * as a public method.  It may be a good idea to completely 
+ * rewrite this code in th future, and definitely not as a
+ * jQuery plugin.
+*/
+
 /*!
  * @preserve
- * jquery.scrolldepth.js | v0.9
+ * jquery.scrolldepth.js | v0.9.1
  * Copyright (c) 2015 Rob Flaherty (@robflaherty)
  * Licensed under the MIT and GPL licenses.
  */
 ;(function ( $, window, document, undefined ) {
+
+  $ = window.jQuery; /* Somehow, the $ variable sometimes gets overwritten with something else that only ever returns the document. */
 
   "use strict";
 
@@ -16,7 +25,8 @@
     pixelDepth: true,
     nonInteraction: true,
     gaGlobal: false,
-    gtmOverride: false
+    gtmOverride: false,
+    container: undefined
   };
 
   var $window = $(window),
@@ -76,6 +86,11 @@
      * Functions
      */
 
+    function getScrollDistance(){
+      var winHeight = window.innerHeight ? window.innerHeight : $window.height();
+      return $window.scrollTop() + winHeight;
+    }
+
     function sendEvent(action, label, scrollDistance, timing) {
 
       if (standardEventHandler) {
@@ -127,13 +142,15 @@
 
     }
 
-    function calculateMarks(docHeight) {
+    function calculateMarks(docHeight, docTop) {
+      var offsetDocHeight = docHeight + docTop;
       return {
-        '25%' : parseInt(docHeight * 0.25, 10),
-        '50%' : parseInt(docHeight * 0.50, 10),
-        '75%' : parseInt(docHeight * 0.75, 10),
+        '0%' : parseInt(offsetDocHeight * 0.0, 10),
+        '25%' : parseInt(offsetDocHeight * 0.25, 10),
+        '50%' : parseInt(offsetDocHeight * 0.50, 10),
+        '75%' : parseInt(offsetDocHeight * 0.75, 10),
         // Cushion to trigger 100% event in iOS
-        '100%': docHeight - 5
+        '100%': offsetDocHeight - 5
       };
     }
 
@@ -162,6 +179,7 @@
       // Returns String
       return (Math.floor(scrollDistance/250) * 250).toString();
     }
+
 
     function init() {
       bindScrollDepth();
@@ -219,6 +237,23 @@
 
     };
 
+    $.scrollDepth.calculateScrollPercentageFromMarks = function(){
+      var depths, i, len, mark, key, 
+      marks = calculateMarks(getDocHeight(), getDocTop()),
+      marksPercentages = Object.keys(marks),
+      distance = getScrollDistance(),
+      depths = [];
+
+      for (i = 0, len = marksPercentages.length; i < len; i++) {
+        key = marksPercentages[i];
+        mark = marks[key];
+        if (distance >= mark) {
+          depths.push(key);
+        }
+      }
+      return depths[depths.length - 1];
+    }
+
     /*
      * Throttle function borrowed from:
      * Underscore.js 1.5.2
@@ -254,6 +289,23 @@
       };
     }
 
+    function selectContainer(){
+        if(options.container){
+          return $(options.container);
+        } else {
+          return $(document.body);
+        }      
+    }
+
+    function getDocHeight(){
+      return selectContainer().height();
+    }
+
+    function getDocTop(){
+      var doc = selectContainer();
+      return doc.position() ? doc.position().top : 0;
+    }
+
     /*
      * Scroll Event
      */
@@ -268,12 +320,11 @@
          * account for dynamic DOM changes.
          */
 
-        var docHeight = $(document).height(),
-          winHeight = window.innerHeight ? window.innerHeight : $window.height(),
-          scrollDistance = $window.scrollTop() + winHeight,
+          var doc = selectContainer(),
+            scrollDistance = getScrollDistance(),
 
           // Recalculate percentage marks
-          marks = calculateMarks(docHeight),
+          marks = calculateMarks(getDocHeight(), getDocTop()),
 
           // Timing
           timing = +new Date - startTime;

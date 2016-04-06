@@ -1,0 +1,22 @@
+{
+  "name": "jquery-scrolldepth",
+  "version": "0.9.1",
+  "description": "Scroll Depth is a Google Analytics plugin that tracks how far users are scrolling. The plugin provides native support for Universal Analytics, Classic Google Analytics, and Google Tag Manager. It can also be used with any analytics service that supports events.",
+  "main": "jquery.scrolldepth.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SCPR/jquery-scrolldepth.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SCPR/jquery-scrolldepth/issues"
+  },
+  "homepage": "https://github.com/SCPR/jquery-scrolldepth#readme"
+}
